@@ -8,7 +8,7 @@ def findShortestPaths(A,B,p,l,u,arr,pointers):
         if u-1<=l:
             return
         mid = (l+u)/2
-        p[mid] = LCS(A,B,arr,pointers,mid=mid, lower=p[l], upper=p[u])
+        p[mid] = LCS(A,B,arr,pointers,mid=mid, lower=p[l], upper=p[u], l=l, u=u)
         findShortestPaths(A,B,p,l,mid,arr,pointers)
         findShortestPaths(A,B,p,mid,u,arr,pointers)
                                 
@@ -27,7 +27,7 @@ def main():
         findShortestPaths(A,B,paths,0,m,arr,pointers)
         #read length of shortest path, then get CLCS length from that?
 
-def LCS(A, B, arr, pointers, is_First=False, mid=0, lower=0, upper=0):
+def LCS(A, B, arr, pointers, is_First=False, mid=0, lower=0, upper=0, l=0, u=0):
         m = len(A)
         n = len(B)
         A = A + A
@@ -41,30 +41,29 @@ def LCS(A, B, arr, pointers, is_First=False, mid=0, lower=0, upper=0):
                 if A[i - 1] == B[j - 1]:
                     arr[i][j] = arr[i - 1][j - 1] + 1
                     pointers[i][j] = 1
-                    if is_First:
+                    if i+m <= 2*m:
                         arr[i + m][j] = arr[i - 1][j - 1] + 1
                         pointers[i+m][j] = 1
                 else:
                     if arr[i - 1][j] > arr[i][j - 1]:
                         arr[i][j] = arr[i - 1][j]
                         pointers[i][j] = -1
-                        if is_First:
+                        if i+m <= 2*m:
                             arr[i + m][j] = arr[i - 1][j] + 1
                             pointers[i + m][j] = -1
                     # getting value from top
                     elif arr[i][j - 1] > arr[i - 1][j]:
                         arr[i][j] = arr[i][j - 1]
                         pointers[i][j] = 2
-                        if is_First:
+                        if i+m <= 2*m:
                             arr[i + m][j] = arr[i][j - 1]
                             pointers[i+m][j] = 2
                     else:  # default get value from the left
                         arr[i][j] = arr[i - 1][j]
                         pointers[i][j] = -1
-                        if is_First:
+                        if i+m<=2*m:
                             arr[i + m][j] = arr[i - 1][j]
                             pointers[i+m][j] = -1
-        print(arr[mid+m][n])
         return backtrace(m, n, 0, pointers)
 
 def backtrace(m, n, mid, pointers):
