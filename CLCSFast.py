@@ -58,15 +58,15 @@ def LCS(A, B, arr, pointers, is_First=False, mid=0):
         print(arr[m][n])
         #return backtrace(m, n, 0, pointers)
 
-def backtrace(m, n, mid, arr, pointers):
-  path = np.zeros((n, 2), dtype=int)
+def backtrace(m, n, mid):
+  path ={}
 
   while m != 0 and n != 0:
-    if ((path[m + mid][0] == 0) and (path[m + mid][1] == 0)):
+    if m + mid not in path:
       path[m + mid] = [n, n]
     else:
       path[m + mid] = [n, path[m + mid][1]]
-      
+
     if pointers[m][n] == 1:
       n = n - 1
       m = m - 1
@@ -74,7 +74,6 @@ def backtrace(m, n, mid, arr, pointers):
       n = n - 1
     elif pointers[m][n] == 2:
       m = m - 1
-  
   return path
                                       
 
