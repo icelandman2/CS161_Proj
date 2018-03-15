@@ -22,16 +22,21 @@ def main():
         pointers = np.zeros((len(A)*2+1, len(B)+1), dtype=int)
         paths = 1
         m = len(A)
-        LCS(A,B, arr, pointers)
+        LCS(A,B, arr, pointers, is_First=True)
         #get paths[0], paths[m]
         #findShortestPaths(A,B,paths,0,m)
 
-def LCS(A, B, arr, pointers):
+def LCS(A, B, arr, pointers, is_First=False):
         m = len(A)
         n = len(B)
         A = A + A
         for i in range(1, m + 1):
-            for j in range(1, n + 1):
+            if is_First:
+                nVal = n+1
+            else:
+                #change to bounds as defined by path
+                nVal = n+1
+            for j in range(1, nVal):
                 if A[i - 1] == B[j - 1]:
                     arr[i][j] = arr[i - 1][j - 1] + 1
                     pointers[i][j] = 1
@@ -47,7 +52,6 @@ def LCS(A, B, arr, pointers):
                         arr[i][j] = arr[i - 1][j]
                         pointers[i][j] = -1
         print(arr[m][n])
-        print(pointers)
         #return backtrace(m, n, 0, pointers)
 
 
