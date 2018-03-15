@@ -3,6 +3,7 @@ import numpy as np
 
 global arr
 global pointers
+global p
 
 def findShortestPaths(A,B,p,l,u,arr,pointers):
         if u-1<=l:
@@ -20,11 +21,11 @@ def main():
         A,B = l.split()
         arr = np.zeros((len(A)*2+1, len(B)+1), dtype=int)
         pointers = np.zeros((len(A)*2+1, len(B)+1), dtype=int)
-        paths = {}
+        p = {}
         m = len(A)
-        paths[0] = LCS(A,B, arr, pointers, is_First=True)
-        paths[m] = paths[0]
-        findShortestPaths(A,B,paths,0,m,arr,pointers)
+        p[0] = LCS(A,B, arr, pointers, is_First=True)
+        p[m] = p[0]
+        findShortestPaths(A,B,p,0,m,arr,pointers)
         #read length of shortest path, then get CLCS length from that?
 
 def LCS(A, B, arr, pointers, is_First=False, mid=0, lower=0, upper=0, l=0, u=0):
@@ -33,11 +34,20 @@ def LCS(A, B, arr, pointers, is_First=False, mid=0, lower=0, upper=0, l=0, u=0):
         A = A + A
         for i in range(mid+1, mid+m + 1):
             if is_First:
-                nVal = n+1
+                upperBound = n+1
+                lowerBound = 1
             else:
+                if i in upper.keys():
+                    upperBound = upper[i][1]
+                else:
+                    upperBound = n+1
+                if i in lower.keys():
+                    lowerBound = lower[i][0]
+                else:
+                    lowerBound = 1
                 #change to bounds as defined by path
                 nVal = n+1
-            for j in range(1, nVal):
+            for j in range(lowerBound, upperBound):
                 if A[i - 1] == B[j - 1]:
                     arr[i][j] = arr[i - 1][j - 1] + 1
                     pointers[i][j] = 1
@@ -64,7 +74,7 @@ def LCS(A, B, arr, pointers, is_First=False, mid=0, lower=0, upper=0, l=0, u=0):
                         if i+m<=2*m:
                             arr[i + m][j] = arr[i - 1][j]
                             pointers[i+m][j] = -1
-        return backtrace(m, n, 0, pointers)
+        return backtrace(m, n, mid, pointers)
 
 def backtrace(m, n, mid, pointers):
   path ={}
