@@ -13,21 +13,21 @@ def findShortestPaths(A,B,p,l,u):
         findShortestPaths(A,B,p,mid,u)
 
 def singleShortestPath(A, B, mid, lowerPath, upperPath):
-    m = len(A) / 2
+    m = len(A)/2
     n = len(B)
-
     for i in range(mid + 1, mid + m + 1):
         lowerBound = lowerPath[0].get(i, (n,n))[1]
         upperBound = upperPath[0].get(i, (1, 1))[0]
         #check that j is within these valid bounds
         for j in range(upperBound, lowerBound + 1):
             row = i - mid
+            #check if there is a letter match
             if A[i-1] == B[j-1]:
                 if i == mid + 1:
                     arr[i][j] = 1
                 else:
                     arr[i][j] = arr[i-1][j-1]+1
-                pointers[row][j] = 2
+                pointers[row][j] = 1
             else:
                 if i == mid + 1:
                     arr[i-1][j] = 0
@@ -36,19 +36,18 @@ def singleShortestPath(A, B, mid, lowerPath, upperPath):
                     pointers[row][j] = -1
                 elif j == upperBound: 
                     arr[i][j] = arr[i-1][j]
-                    pointers[row][j] = 1
+                    pointers[row][j] = 2
                 elif arr[i-1][j] >= arr[i][j-1]:
                     arr[i][j] = arr[i-1][j]
-                    pointers[row][j] = 1
+                    pointers[row][j] = 2
                 else:
                     arr[i][j] = arr[i][j-1]
                     pointers[row][j] = -1
 
-    path = backtrace(m, len(B), mid)
+    path = backtrace(m, n, mid)
     length = arr[mid + m][n]
 
     return (path, length)
-
 
 def backtrace(m, n, mid):
   path = {}
@@ -67,7 +66,6 @@ def backtrace(m, n, mid):
       m = m - 1
   return path
 
-
 def main():
     if len(sys.argv) != 1:
         sys.exit('Usage: `python LCS.py < input`')
@@ -85,11 +83,11 @@ def main():
             paths[m][0][key + m] = paths[0][0][key]
 
         findShortestPaths(A, B, paths, 0, m)
-        maximum = 0
+        longest = 0
         for path in paths:
-            maximum = max(path[1], maximum)
-
-        print(maximum)
+            if path[1] > longest:
+                longest = path[1]
+        print(longest)
 
 if __name__ == '__main__':
     main()
