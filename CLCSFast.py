@@ -30,7 +30,7 @@ def LCS(A, B, arr, pointers, is_First=False, mid=0):
         m = len(A)
         n = len(B)
         A = A + A
-        for i in range(mid+1, mid+m+m + 1):
+        for i in range(mid+1, mid+m + 1):
             if is_First:
                 nVal = n+1
             else:
@@ -39,19 +39,23 @@ def LCS(A, B, arr, pointers, is_First=False, mid=0):
             for j in range(1, nVal):
                 if A[i - 1] == B[j - 1]:
                     arr[i][j] = arr[i - 1][j - 1] + 1
+                    arr[i+m][j] = arr[i - 1][j - 1] + 1
                     pointers[i][j] = 1
                 else:
                     if arr[i - 1][j] > arr[i][j - 1]:
                         arr[i][j] = arr[i - 1][j]
+                        arr[i+m][j] = arr[i-1][j]
                         pointers[i][j] = -1
                     # getting value from top
                     elif arr[i][j - 1] > arr[i - 1][j]:
                         arr[i][j] = arr[i][j - 1]
+                        arr[i+m][j] = arr[i][j-1]
                         pointers[i][j] = 2
                     else:  # default get value from the left
                         arr[i][j] = arr[i - 1][j]
+                        arr[i+m][j] = arr[i-1][j]
                         pointers[i][j] = -1
-        print(arr[m + m][n])
+        print(arr[m][n])
         #return backtrace(m, n, 0, pointers)
 
 def backtrace(m, n, mid):
